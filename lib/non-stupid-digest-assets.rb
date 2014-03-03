@@ -36,15 +36,23 @@ module Sprockets
         full_non_digest_path = File.join dir, info['logical_path']
         full_non_digest_gz_path = "#{full_non_digest_path}.gz"
 
-        if File.exists? full_digest_path
-          logger.debug "Writing #{full_non_digest_path}"
-          FileUtils.cp full_digest_path, full_non_digest_path
+        if File.exists?(full_digest_path)
+          if !File.exists?(full_non_digest_path) || !FileUtils.identical?(full_digest_path, full_non_digest_path)
+            logger.debug "Writing #{full_non_digest_path}"
+            FileUtils.cp full_digest_path, full_non_digest_path
+          else
+            logger.debug "Identical: #{full_non_digest_path}"
+          end
         else
           logger.debug "Could not find: #{full_digest_path}"
         end
-        if File.exists? full_digest_gz_path
-          logger.debug "Writing #{full_non_digest_gz_path}"
-          FileUtils.cp full_digest_gz_path, full_non_digest_gz_path
+        if File.exists?(full_digest_gz_path)
+          if !File.exists?(full_non_digest_gz_path) || !FileUtils.identical?(full_digest_gz_path, full_non_digest_gz_path)
+            logger.debug "Writing #{full_non_digest_gz_path}"
+            FileUtils.cp full_digest_gz_path, full_non_digest_gz_path
+          else
+            logger.debug "Identical: #{full_non_digest_gz_path}"
+          end
         else
           logger.debug "Could not find: #{full_digest_gz_path}"
         end
