@@ -13,12 +13,7 @@ module NonStupidDigestAssets
     def whitelisted_files(files)
       files.select do |file, info|
         whitelist.any? do |item|
-          case item
-          when Regexp
-            info['logical_path'] =~ item
-          else
-            info['logical_path'] == item
-          end
+          item === info['logical_path']
         end
       end
     end
@@ -39,7 +34,7 @@ module Sprockets
         if File.exists?(full_digest_path)
           if !File.exists?(full_non_digest_path) || !FileUtils.identical?(full_digest_path, full_non_digest_path)
             logger.debug "Writing #{full_non_digest_path}"
-            FileUtils.cp full_digest_path, full_non_digest_path
+            FileUtils.copy_file full_digest_path, full_non_digest_path, :preserve_attributes
           else
             logger.debug "Identical: #{full_non_digest_path}"
           end
@@ -49,7 +44,7 @@ module Sprockets
         if File.exists?(full_digest_gz_path)
           if !File.exists?(full_non_digest_gz_path) || !FileUtils.identical?(full_digest_gz_path, full_non_digest_gz_path)
             logger.debug "Writing #{full_non_digest_gz_path}"
-            FileUtils.cp full_digest_gz_path, full_non_digest_gz_path
+            FileUtils.copy_file full_digest_gz_path, full_non_digest_gz_path, :preserve_attributes
           else
             logger.debug "Identical: #{full_non_digest_gz_path}"
           end
